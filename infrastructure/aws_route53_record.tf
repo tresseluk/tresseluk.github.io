@@ -1,6 +1,6 @@
 resource "aws_route53_record" "dns_record" {
   zone_id = aws_route53_zone.dns_zone.id
-  name    = aws_route53_zone.dns_zone.name
+  name    = var.dns_zone_name
   type    = "A"
   records = [
     "185.199.108.153",
@@ -13,23 +13,23 @@ resource "aws_route53_record" "dns_record" {
 
 resource "aws_route53_record" "dns_record_www" {
   zone_id = aws_route53_zone.dns_zone.id
-  name    = "www.${aws_route53_zone.dns_zone.name}"
+  name    = "www.${var.dns_zone_name}"
   type    = "CNAME"
-  records = ["tresseluk.github.io."]
+  records = ["${var.github_username}.github.io."]
   ttl = 300
 }
 
 resource "aws_route53_record" "dns_record_mail" {
   zone_id = aws_route53_zone.dns_zone.id
-  name    = aws_route53_zone.dns_zone.name
+  name    = var.dns_zone_name
   type    = "MX"
-  records = ["0 tressel-co-uk.mail.protection.outlook.com."]
+  records = ["0 ${replace(var.dns_zone_name, ".", "-")}.mail.protection.outlook.com."]
   ttl = 300
 }
 
 resource "aws_route53_record" "dns_record_autodiscover" {
   zone_id = aws_route53_zone.dns_zone.id
-  name    = "autodiscover.${aws_route53_zone.dns_zone.name}"
+  name    = "autodiscover.${var.dns_zone_name}"
   type    = "CNAME"
   records = ["autodiscover.outlook.com."]
   ttl = 300
@@ -37,7 +37,7 @@ resource "aws_route53_record" "dns_record_autodiscover" {
 
 resource "aws_route53_record" "dns_record_spf" {
   zone_id = aws_route53_zone.dns_zone.id
-  name    = aws_route53_zone.dns_zone.name
+  name    = var.dns_zone_name
   type    = "TXT"
   records = ["v=spf1 include:spf.protection.outlook.com -all"]
   ttl = 300
@@ -45,8 +45,8 @@ resource "aws_route53_record" "dns_record_spf" {
 
 resource "aws_route53_record" "dns_record_github_pages" {
   zone_id = aws_route53_zone.dns_zone.id
-  name    = "_github-pages-challenge-tresseluk.${aws_route53_zone.dns_zone.name}"
+  name    = "_github-pages-challenge-${var.github_username}.${var.dns_zone_name}"
   type    = "TXT"
-  records = ["f9abed490ac401a2ee3be1fc2a688e"]
+  records = [var.github_pages_code]
   ttl = 300
 }

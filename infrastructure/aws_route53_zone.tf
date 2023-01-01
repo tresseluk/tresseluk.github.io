@@ -1,3 +1,3 @@
 resource "aws_route53_zone" "dns_zone" {
-  name = "tressel.co.uk"
+  name = var.dns_zone_name
 }
